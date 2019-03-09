@@ -7,18 +7,12 @@ install.packages("raster")
 install.packages("rgdal")
 install.packages("RStoolbox")
 install.packages("ggplot2")
-install.packages("sp")
-install.packages("ggpolypath")
-
 
 #load the packages to use them in this script:
 library(raster)
 library(rgdal)  
 library(RStoolbox)
 library(ggplot2)    
-library(sp)
-library(ggpolypath)
-
 
 ####################### set the working directory####################### 
 
@@ -179,7 +173,7 @@ legend("top", legend = NA, title = "NDWI 2018", bty = "n", cex = 1.3)
 plot(MNDWI_2014, main="MNDWI 2014")
 legend("top", legend = NA, title = "MNDWI 2014", bty = "n", cex = 1.3)
 plot(MNDWI_2018, main="MNDWI 2018")
-legend("top", legend = NA, title = "MNDWI 2014", bty = "n", cex = 1.3)
+legend("top", legend = NA, title = "MNDWI 2018", bty = "n", cex = 1.3)
 
 #export all indices to disk:
 indices <- stack(NDWI_2014, NDWI_2018, MNDWI_2014, MNDWI_2018)
@@ -241,6 +235,9 @@ summary(Waterbody_2014)
 area(Waterbody_2014) #in m?
 area(Waterbody_2014)/1000000 #in km?
 
+area(Waterbody_2018)
+area(Waterbody_2018)/1000000
+
 #add the area information as a column to the shapefile table:
 Waterbody_2014$area_sqm <- area(Waterbody_2014)
 Waterbody_2014$area_sqkm <- area(Waterbody_2014)/1000000
@@ -252,7 +249,7 @@ Waterbody_2014
 
 ################### Dried up Area Detection ################### 
 
-#generate the dried up
+#generate the dried up area:
 Dried_up_area <- erase(Waterbody_2014, Waterbody_2018)
 
 writeOGR(Dried_up_area, ".", "Dried_up_area", driver="ESRI Shapefile", overwrite_layer=TRUE)
