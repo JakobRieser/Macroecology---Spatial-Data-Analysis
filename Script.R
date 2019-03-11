@@ -27,8 +27,6 @@
 
 ####################### Data download ######################
 
-#the data and this code can be found @ www.github.com/JakobRieser/Macroecology
-
 
 ####################### Install and load the needed packages####################### 
 
@@ -294,9 +292,6 @@ Dried_up_area <- erase(Waterbody_2014, Waterbody_2018)
 writeOGR(Dried_up_area, ".", "Dried_up_area", driver="ESRI Shapefile", overwrite_layer=TRUE)
 
 dev.off()
-#ggRGB(Theewaterskloof_2014, r="Red", g="Green", b="Blue", stretch="lin")+
- # geom_polygon(data = Dried_up_area, aes(x = long, y = lat, group=group), fill="orange", color="white")
-  #--> does not work ffs
 
 #plot the dried up area on top of the landsat imagery:
 plotRGB(Theewaterskloof_2018, r="Red", g="Green", b="Blue", stretch="lin")
