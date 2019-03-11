@@ -27,8 +27,6 @@
 
 ####################### Data download ######################
 
-#the data and this code can be found @ www.github.com/JakobRieser/Macroecology
-
 
 ####################### Install and load the needed packages####################### 
 
@@ -50,7 +48,7 @@ library(ggplot2)
 getwd()
 
 #set the directory to the folder you want to work in and get & store your data:
-setwd("C:/Users/Jakob/OneDrive/EAGLE M.Sc/Term 1 (Winter 2018 - 2019)/Macroecology/Data/") 
+setwd("D:/Programme/OneDrive/EAGLE M.Sc/Term 1 (Winter 2018 - 2019)/Macroecology/Data/") 
 #this is important, when you don't want to change your directory for every dataset you want to load in your R workspace
 
 
@@ -139,7 +137,10 @@ Theewaterskloof_2018 <- crop(stack2018_cal, Theewaterskloof_reservoir)
 writeRaster(Theewaterskloof_2014, filename="Theewaterskloof_2014", format="GTiff", overwrite=TRUE, options=c("INTERLEAVE=BAND","COMPRESS=LZW"))
 writeRaster(Theewaterskloof_2018, filename="Theewaterskloof_2018", format="GTiff", overwrite=TRUE, options=c("INTERLEAVE=BAND","COMPRESS=LZW"))
 
-#reload the resized data as a raster brick (raster brick save ram while processing):
+
+#from here the data (Theewaterskloof_201X.tif) is provided
+
+#reload the resized data as a raster brick:
 Theewaterskloof_2014 <- brick("Theewaterskloof_2014.tif")
 Theewaterskloof_2018 <- brick("Theewaterskloof_2018.tif")
 
@@ -173,6 +174,7 @@ par(mfrow=c(1,2)) #split the data viewer in 2 columns
 
 plotRGB(Theewaterskloof_2014, r="Red", g="Green", b="Blue", stretch="lin")
 legend("top", legend = NA, title = "2014", bty = "n", cex = 2) #Adds title
+
 
 plotRGB(Theewaterskloof_2018, r="Red", g="Green", b="Blue", stretch="lin")
 legend("top", legend = NA, title = "2018", bty = "n", cex = 2)
@@ -242,10 +244,6 @@ plot(MNDWI_2014, col="blue")
 Waterbody_2014 <- rasterToPolygons(MNDWI_2014, fun=function(MNDWI_2014){MNDWI_2014>0}, n=4, na.rm=TRUE, digits=12, dissolve=TRUE)
 Waterbody_2018 <- rasterToPolygons(MNDWI_2018, fun=function(MNDWI_2018){MNDWI_2018>0}, n=4, na.rm=TRUE, digits=12, dissolve=TRUE)
 
-#export the shapefiles to disk:
-writeOGR(Waterbody_2014, ".", "Waterbody_2014", driver="ESRI Shapefile", overwrite_layer=TRUE)
-writeOGR(Waterbody_2018, ".", "Waterbody_2018", driver="ESRI Shapefile", overwrite_layer=TRUE)
-
 #have a look at the generated shapefiles:
 par(mfrow=c(1,2))
 plot(Waterbody_2014, col="blue", border=FALSE, main="Waterbody 2014")
@@ -286,19 +284,14 @@ Waterbody_2018$area_sqkm <- area(Waterbody_2018)/1000000
 
 Waterbody_2014
 
+
 ################### Dried up Area Detection ################### 
 
 #generate the dried up area:
 Dried_up_area <- erase(Waterbody_2014, Waterbody_2018)
 
-writeOGR(Dried_up_area, ".", "Dried_up_area", driver="ESRI Shapefile", overwrite_layer=TRUE)
-
-dev.off()
-#ggRGB(Theewaterskloof_2014, r="Red", g="Green", b="Blue", stretch="lin")+
- # geom_polygon(data = Dried_up_area, aes(x = long, y = lat, group=group), fill="orange", color="white")
-  #--> does not work ffs
-
 #plot the dried up area on top of the landsat imagery:
+dev.off()
 plotRGB(Theewaterskloof_2018, r="Red", g="Green", b="Blue", stretch="lin")
 plot(Dried_up_area, col="orange", border=FALSE, add=TRUE)
 
@@ -310,5 +303,24 @@ area(Dried_up_area)/1000000 #in km²
 #add it to the shapefile as a column:
 Dried_up_area$area_sqm <- area(Dried_up_area)
 Dried_up_area$area_sqkm <- area(Dried_up_area)/1000000
+
+
+################### Export the shapefiles to disk ###################
+
+#add coordinate system
+Waterbody_2014 <- spTransform(Waterbody_2014, CRS("+proj=longlat +datum=WGS84"))
+Waterbody_2018 <- spTransform(Waterbody_2018, CRS("+proj=longlat +datum=WGS84"))
+Dried_up_area <- spTransform(Dried_up_area, CRS("+proj=longlat +datum=WGS84"))
+
+#export the shapefiles to disk:
+writeOGR(Waterbody_2014, ".", "Waterbody_2014", driver="ESRI Shapefile", overwrite_layer=TRUE) #as shapefile 
+writeOGR(Waterbody_2018, ".", "Waterbody_2018", driver="ESRI Shapefile", overwrite_layer=TRUE)  
+writeOGR(Dried_up_area, ".", "Dried_up_area", driver="ESRI Shapefile", overwrite_layer=TRUE) 
+
+writeOGR(Waterbody_2014[1], "Waterbody_2014.kml", layer="layer", driver="KML", overwrite_layer=TRUE) #as kml (for Google Earth)
+writeOGR(Waterbody_2018[1], "Waterbody_2018.kml", layer="layer", driver="KML", overwrite_layer=TRUE) 
+writeOGR(Dried_up_area[1], "Dried_up_area.kml", layer="layer", driver="KML", overwrite_layer=TRUE)
+
+
 
 #THE END

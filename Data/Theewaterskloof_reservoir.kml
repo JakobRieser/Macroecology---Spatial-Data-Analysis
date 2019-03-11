@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Schema name="Theewaterskloof_reservoir" id="Theewaterskloof_reservoir">
+	<SimpleField name="CLASS_NAME" type="string"></SimpleField>
+	<SimpleField name="CLASS_ID" type="string"></SimpleField>
+	<SimpleField name="CLASS_CLRS" type="string"></SimpleField>
+</Schema>
+<Folder><name>Theewaterskloof_reservoir</name>
+  <Placemark>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#Theewaterskloof_reservoir">
+		<SimpleData name="CLASS_NAME">Theewateskloof_reservoir</SimpleData>
+		<SimpleData name="CLASS_ID">1</SimpleData>
+		<SimpleData name="CLASS_CLRS">255,0,0</SimpleData>
+	</SchemaData></ExtendedData>
+      <Polygon><outerBoundaryIs><LinearRing><coordinates>19.3124164910556,-34.0810240985467 19.3121642053162,-34.0937350612385 19.1070568098624,-34.0907452049393 19.1073397114038,-34.0780356626163 19.1097521929399,-33.9693273537734 19.314567891474,-33.9723036579907 19.3124164910556,-34.0810240985467</coordinates></LinearRing></outerBoundaryIs></Polygon>
+  </Placemark>
+</Folder>
+</Document></kml>
