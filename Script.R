@@ -159,7 +159,7 @@ ggRGB(Theewaterskloof_2014, r=4, g=3, b=2, stretch="lin") #plots a rgb image fro
 names(Theewaterskloof_2014)
 
 #That's why we rename them to their real names using a list with the names (band names can be easily found out using Google):
-Landsat8_band_names <- c("Coastal_Aerosol", "Blue", "Green", "Red", "NIR", "SWIR1", "SWIR2", "Cirrus", "TIR1", "TIR2")
+Landsat8_band_names <- c("Coastal.Aerosol", "Blue", "Green", "Red", "NIR", "SWIR.1", "SWIR.2", "Cirrus", "TIR.1", "TIR.2")
 names(Theewaterskloof_2014) <- Landsat8_band_names
 names(Theewaterskloof_2018) <- Landsat8_band_names
 
@@ -181,7 +181,6 @@ legend("top", legend = NA, title = "2014", bty = "n", cex = 2) #Adds title
 
 plotRGB(Theewaterskloof_2018, r="Red", g="Green", b="Blue", stretch="lin")
 legend("top", legend = NA, title = "2018", bty = "n", cex = 2)
-#scalebar(5000, xy=click(), type='bar', divs=4, below="Meters", cex= 0.5) #adds scalebar
 scalebar(5000, type='bar', divs=4, below="Meters", cex= 0.5) #adds scalebar
 
 #we can clearly see change of the water body
@@ -201,14 +200,14 @@ scalebar(5000, type='bar', divs=4, below="Meters", cex= 0.5) #adds scalebar
 #there are two versions of the NDWI:
 #the "normal" version, which is defined as (Green-NIR)/(Green+NIR)
 #the "modified" version, which is defined as (Green-SWIR1)/(Green+SWIR1)
-#we have to evaluate, which version fits our area the best
+#we have to evaluate which version fits our area the best
 
-#compute the NDWI:
+#compute the NDWI (for each pixel):
 
 NDWI_2014 <- (Theewaterskloof_2014[["Green"]]-Theewaterskloof_2014[["NIR"]])/(Theewaterskloof_2014[["Green"]]+Theewaterskloof_2014[["NIR"]])
 NDWI_2018 <- (Theewaterskloof_2018[["Green"]]-Theewaterskloof_2018[["NIR"]])/(Theewaterskloof_2018[["Green"]]+Theewaterskloof_2018[["NIR"]])
 
-#compute the MDWI:
+#compute the MDWI (for each pixel):
 
 MNDWI_2014 <- (Theewaterskloof_2014[["Green"]]-Theewaterskloof_2014[["SWIR.1"]])/(Theewaterskloof_2014[["Green"]]+Theewaterskloof_2014[["SWIR.1"]])
 MNDWI_2018 <- (Theewaterskloof_2018[["Green"]]-Theewaterskloof_2018[["SWIR.1"]])/(Theewaterskloof_2018[["Green"]]+Theewaterskloof_2018[["SWIR.1"]])
