@@ -1,5 +1,6 @@
 ###SHRINKING WATER LEVELS AT THE THEEWATERSKLOOF RESERVOIR, CAPE TOWN, SA ###
-
+# by Jakob Rieser, EAGLE Master student, University of Wuerzburg
+# for Remote Sensing mini-course of the conference Macroecology 2019
 
 
 ####################### Background and goals ####################### 
@@ -28,7 +29,7 @@
 ####################### Data download ######################
 
 
-####################### Install and load the needed packages####################### 
+####################### Install and load the needed packages ####################### 
 
 #install the following packages:
 install.packages("raster")
@@ -36,13 +37,13 @@ install.packages("rgdal")
 install.packages("RStoolbox")
 install.packages("ggplot2")
 
-#load the packages to use them in this script:
+#load (=activate) these packages to use them in this script:
 library(raster)
 library(rgdal)  
 library(RStoolbox)
 library(ggplot2)    
 
-####################### set the working directory####################### 
+####################### set the working directory ####################### 
 
 #check your current working directory:
 getwd()
@@ -60,20 +61,20 @@ setwd("C:/Users/Malin/Documents/Studium/Wuerzburg/Macroecology_Conference/Macroe
 ############################################################################
 
 
-#for this part of the script the data is not provided due to file size
+#for this part of the script the data is not provided due to the large file size
 #you can download Landsat data for example @ www.earthexplorer.usgs.com for free
-#you can do this code with every landsat 8 dataset
+#you can use this code for every landsat 8 dataset
 
 ####################### preparing the landsat scenes ####################### 
 
-#load in the original downloaded landsat 8 scenes via adressing the metadatafile (*MTL.txt):
+#load the original downloaded landsat 8 scenes via addressing the metadatafile (*MTL.txt):
 meta2014 <- readMeta("raw/LC08_L1TP_175083_20140103_20170427_01_T1/LC08_L1TP_175083_20140103_20170427_01_T1_MTL.txt")
 meta2018 <- readMeta("raw/LC08_L1TP_175083_20180114_20180120_01_T1/LC08_L1TP_175083_20180114_20180120_01_T1_MTL.txt")
 
 #look at the structure and content of the data:
 meta2014
 
-#We do't want to adress every single band/file while processing for every step, so we
+#We don't want to address every single band/file while processing for every step, so we
 #create a layer stack from the bands to make processing faster:
 
 stack2014 <- stackMeta(meta2014)
@@ -84,10 +85,10 @@ stack2014
 
 ####################### Calibration ####################### 
 
-#The raster values are stored in digital numbers to reduce file size. 
+#The raster values are stored in digital numbers (DNs) to reduce the file size. 
 #To recalculate the actual radiation measured at the sensor, we need to apply sensor- and band-specific parameters
 #Sensor Calibration is used for converting the digital numbers to meaningful units (reflectance, radiation, temperature)
-#in this case, we are converting the dns of the multispectral bands to apparent reflectance ("apref") and the thermal bands to surface temperature
+#In this case, we are converting the DNs of the multispectral bands to apparent reflectance ("apref") and the thermal bands to surface temperature
 
 #calibration:
 stack2014_cal <- radCor(stack2014, metaData=meta2014, method = "apref") 
@@ -108,7 +109,7 @@ writeRaster(stack2018_cal, filename="stack2018_cal", format="GTiff", overwrite=T
 
 
 ############################################################################
-################### Rezising Data to the study area ################## 
+################### Rezising data to the study area ################## 
 ############################################################################
 
 
@@ -139,6 +140,8 @@ Theewaterskloof_2018 <- crop(stack2018_cal, Theewaterskloof_reservoir)
 writeRaster(Theewaterskloof_2014, filename="Theewaterskloof_2014", format="GTiff", overwrite=TRUE, options=c("INTERLEAVE=BAND","COMPRESS=LZW"))
 writeRaster(Theewaterskloof_2018, filename="Theewaterskloof_2018", format="GTiff", overwrite=TRUE, options=c("INTERLEAVE=BAND","COMPRESS=LZW"))
 
+
+
 #################################################################
 ### from here the data (Theewaterskloof_201X.tif) is provided ###
 #################################################################
@@ -155,7 +158,7 @@ ggRGB(Theewaterskloof_2014, r=4, g=3, b=2, stretch="lin") #plots a rgb image fro
 
 ####################### Renaming bands ####################### 
 
-#as you can see, the bands are named not very suitable for further analysis:
+#as you can see, the bands are named not very suitably for further analysis:
 names(Theewaterskloof_2014)
 
 #That's why we rename them to their real names using a list with the names (band names can be easily found out using Google):
@@ -170,13 +173,13 @@ plot(Theewaterskloof_2014) #plots all bands
 plot(Theewaterskloof_2018)
 
 
-####################### Get a Overview of the study area ####################### 
+####################### Get an Overview of the study area ####################### 
 
 #compare the landsat imagery from both aquisition dates:
-par(mfrow=c(1,2)) #split the data viewer in 2 columns
+par(mfrow=c(1,2)) #split the data viewer into 2 columns
 
 plotRGB(Theewaterskloof_2014, r="Red", g="Green", b="Blue", stretch="lin")
-legend("top", legend = NA, title = "2014", bty = "n", cex = 2) #Adds title
+legend("top", legend = NA, title = "2014", bty = "n", cex = 2) #adds title
 
 
 plotRGB(Theewaterskloof_2018, r="Red", g="Green", b="Blue", stretch="lin")
@@ -215,23 +218,24 @@ MNDWI_2018 <- (Theewaterskloof_2018[["Green"]]-Theewaterskloof_2018[["SWIR.1"]])
 
 #compare the indices by plotting them all together:
 indices <- stack(NDWI_2014, NDWI_2018, MNDWI_2014, MNDWI_2018)
-names(indices) <- c("NDWI 2014", "NDWI 2018", "MNDWI 2014", "MNDWI 2018")
+names(indices) <- c("NDWI_2014", "NDWI_2018", "MNDWI_2014", "MNDWI_2018")
 
 plot(indices)
 
 #--> the MNDWI values show the waterbodies better (the background (=soil) has more differentiable values)
 
 #export all indices to disk, but as seperate *.tif files (named after band):
-writeRaster(indices, ".tif", bylayer = T, overwrite=TRUE)
+writeRaster(indices, paste0(names(indices),".tif"), bylayer = T, overwrite=TRUE)
 
 
 
 ################### Calculate waterbody polygons ################### 
 
 #at the end, we want to have shapefiles of the waterbody of 2014 and 2018 as well as of the dried up area
-#to calculate the extent of the waterbodies in 2014 and 2018 we need to define thresholds: hat values are representing water? --> >=0 
+#to calculate the extent of the waterbodies in 2014 and 2018 we need to define thresholds: 
+#which values are representing water? --> >=0 
 
-#therefore we let all other values be NA (so they will not be recognised, when we transfer the raster into a shapefile):
+#therefore we let all other values be NAs (so they will not be recognised when we transfer the raster into a shapefile):
 MNDWI_2014[MNDWI_2014 < 0] <- NA
 MNDWI_2018[MNDWI_2018 < 0] <- NA
 
@@ -240,7 +244,7 @@ MNDWI_2014[MNDWI_2014 >= 0] <- 1
 MNDWI_2018[MNDWI_2018 >= 0] <- 1
 
 #have a look at the new values:
-dev.off()
+dev.off() #deletes current plot
 plot(MNDWI_2014, col="blue")
 
 #generate shapefiles (dissolve=TRUE for joining all similar values to one polygon):
@@ -272,13 +276,13 @@ summary(Waterbody_2014)
 
 #calculate the area covered with water:
 
-area(Waterbody_2014) #in m?
-area(Waterbody_2014)/1000000 #in km?
+area(Waterbody_2014) #in m2
+area(Waterbody_2014)/1000000 #in km2
 
 area(Waterbody_2018)
 area(Waterbody_2018)/1000000
 
-#add the area information as a column to the shapefile table:
+#add the area information as a column to the shapefile attribute table:
 Waterbody_2014$area_sqm <- area(Waterbody_2014)
 Waterbody_2014$area_sqkm <- area(Waterbody_2014)/1000000
 
@@ -300,10 +304,10 @@ plot(Dried_up_area, col="orange", border=FALSE, add=TRUE)
 
 #calculate the dried up area:
 
-area(Dried_up_area) #in m²
-area(Dried_up_area)/1000000 #in km²
+area(Dried_up_area) #in m2
+area(Dried_up_area)/1000000 #in km2
 
-#add it to the shapefile as a column:
+#add it to the shapefile:
 Dried_up_area$area_sqm <- area(Dried_up_area)
 Dried_up_area$area_sqkm <- area(Dried_up_area)/1000000
 
@@ -315,14 +319,15 @@ Waterbody_2014 <- spTransform(Waterbody_2014, CRS("+proj=longlat +datum=WGS84"))
 Waterbody_2018 <- spTransform(Waterbody_2018, CRS("+proj=longlat +datum=WGS84"))
 Dried_up_area <- spTransform(Dried_up_area, CRS("+proj=longlat +datum=WGS84"))
 
-#export the shapefiles to disk:
+#export the shapefiles to disk (to view in QGIS and further analysis):
 writeOGR(Waterbody_2014, ".", "Waterbody_2014", driver="ESRI Shapefile", overwrite_layer=TRUE) #as shapefile 
 writeOGR(Waterbody_2018, ".", "Waterbody_2018", driver="ESRI Shapefile", overwrite_layer=TRUE)  
 writeOGR(Dried_up_area, ".", "Dried_up_area", driver="ESRI Shapefile", overwrite_layer=TRUE) 
 
+#export the kml-files to disk (to view in Google Earth)
 writeOGR(Waterbody_2014[1], "Waterbody_2014.kml", layer="layer", driver="KML", overwrite_layer=TRUE) #as kml (for Google Earth)
 writeOGR(Waterbody_2018[1], "Waterbody_2018.kml", layer="layer", driver="KML", overwrite_layer=TRUE) 
 writeOGR(Dried_up_area[1], "Dried_up_area.kml", layer="layer", driver="KML", overwrite_layer=TRUE)
 
 
-#THE END
+### THE END ###
