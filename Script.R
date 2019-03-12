@@ -290,6 +290,13 @@ Waterbody_2014
 #generate the dried up area:
 Dried_up_area <- erase(Waterbody_2014, Waterbody_2018)
 
+<<<<<<< HEAD
+=======
+writeOGR(Dried_up_area, ".", "Dried_up_area", driver="ESRI Shapefile", overwrite_layer=TRUE)
+
+dev.off()
+
+>>>>>>> b18fdbbee1ab2c1e758a85246cfe766f8f4bef3e
 #plot the dried up area on top of the landsat imagery:
 dev.off()
 plotRGB(Theewaterskloof_2018, r="Red", g="Green", b="Blue", stretch="lin")
