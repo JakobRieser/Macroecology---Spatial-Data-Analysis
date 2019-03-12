@@ -322,5 +322,4 @@ writeOGR(Waterbody_2018[1], "Waterbody_2018.kml", layer="layer", driver="KML", o
 writeOGR(Dried_up_area[1], "Dried_up_area.kml", layer="layer", driver="KML", overwrite_layer=TRUE)
 
 
-
 #THE END
