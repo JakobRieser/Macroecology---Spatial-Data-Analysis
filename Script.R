@@ -139,8 +139,9 @@ Theewaterskloof_2018 <- crop(stack2018_cal, Theewaterskloof_reservoir)
 writeRaster(Theewaterskloof_2014, filename="Theewaterskloof_2014", format="GTiff", overwrite=TRUE, options=c("INTERLEAVE=BAND","COMPRESS=LZW"))
 writeRaster(Theewaterskloof_2018, filename="Theewaterskloof_2018", format="GTiff", overwrite=TRUE, options=c("INTERLEAVE=BAND","COMPRESS=LZW"))
 
-
-#from here the data (Theewaterskloof_201X.tif) is provided
+#################################################################
+### from here the data (Theewaterskloof_201X.tif) is provided ###
+#################################################################
 
 #reload the resized data as a raster brick:
 Theewaterskloof_2014 <- brick("Theewaterskloof_2014.tif")
@@ -149,7 +150,7 @@ Theewaterskloof_2018 <- brick("Theewaterskloof_2018.tif")
 #have a look at the data:
 Theewaterskloof_2014
 plot(Theewaterskloof_2014) #plots all bands seperately
-ggRGB(Theewaterskloof_2014, stretch="lin") #plots a rgb image from selected bands
+ggRGB(Theewaterskloof_2014, r=4, g=3, b=2, stretch="lin") #plots a rgb image from selected bands
 
 
 ####################### Renaming bands ####################### 
@@ -158,7 +159,7 @@ ggRGB(Theewaterskloof_2014, stretch="lin") #plots a rgb image from selected band
 names(Theewaterskloof_2014)
 
 #That's why we rename them to their real names using a list with the names (band names can be easily found out using Google):
-Landsat8_band_names <- c("Coastal Aerosol", "Blue", "Green", "Red", "NIR", "SWIR 1", "SWIR 2", "Cirrus", "TIR1", "TIR2")
+Landsat8_band_names <- c("Coastal_Aerosol", "Blue", "Green", "Red", "NIR", "SWIR1", "SWIR2", "Cirrus", "TIR1", "TIR2")
 names(Theewaterskloof_2014) <- Landsat8_band_names
 names(Theewaterskloof_2018) <- Landsat8_band_names
 
@@ -180,7 +181,8 @@ legend("top", legend = NA, title = "2014", bty = "n", cex = 2) #Adds title
 
 plotRGB(Theewaterskloof_2018, r="Red", g="Green", b="Blue", stretch="lin")
 legend("top", legend = NA, title = "2018", bty = "n", cex = 2)
-scalebar(5000, xy=click(), type='bar', divs=4, below="Meters", cex= 0.5) #adds scalebar
+#scalebar(5000, xy=click(), type='bar', divs=4, below="Meters", cex= 0.5) #adds scalebar
+scalebar(5000, type='bar', divs=4, below="Meters", cex= 0.5) #adds scalebar
 
 #we can clearly see change of the water body
 
@@ -191,14 +193,14 @@ scalebar(5000, xy=click(), type='bar', divs=4, below="Meters", cex= 0.5) #adds s
 ############################################################################
 
 
-#to detect areas covered with water from remote sensing data, the NDWI indexcan be used
+#to detect areas covered with water from remote sensing data, the NDWI index can be used
 #NDWI = Normalized Difference Water Index
 
 ################### Computation of NDWI and MNDWI ################### 
 
 #there are two versions of the NDWI:
-#the "normal" version, which is defined as (Green-NIR/Green+NIR)
-#the "modified" version, which is defined as (Green-SWIR1/Green+SWIR1)
+#the "normal" version, which is defined as (Green-NIR)/(Green+NIR)
+#the "modified" version, which is defined as (Green-SWIR1)/(Green+SWIR1)
 #we have to evaluate, which version fits our area the best
 
 #compute the NDWI:
