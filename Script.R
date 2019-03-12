@@ -49,6 +49,8 @@ getwd()
 
 #set the directory to the folder you want to work in and get & store your data:
 setwd("D:/Programme/OneDrive/EAGLE M.Sc/Term 1 (Winter 2018 - 2019)/Macroecology/Data/") 
+#setwd("C:/Users/Malin/Documents/Studium/Wuerzburg/Macroecology_Conference/NDWI_data") 
+
 #this is important, when you don't want to change your directory for every dataset you want to load in your R workspace
 
 
