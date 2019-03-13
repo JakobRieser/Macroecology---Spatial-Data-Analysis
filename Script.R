@@ -92,7 +92,7 @@ stack2014
 
 #calibration:
 stack2014_cal <- radCor(stack2014, metaData=meta2014, method = "apref") 
-stack2018_cal <- radCor(stack2018, metaData=meta2014, method = "apref") 
+stack2018_cal <- radCor(stack2018, metaData=meta2018, method = "apref") 
 
 #check that the data type of the bands has changed from integer to float:
 dataType(stack2014)
