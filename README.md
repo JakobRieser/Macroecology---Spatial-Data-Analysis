@@ -1,2 +1,2 @@
 # Macroecology-Spatial-Data-Analysis
-Macroecology 2019 Conference: Spatial Data Analysis - Remote sensing using OpenSource software
+COurse Material concerning the course "Spatial Data Analysis - Remote sensing using OpenSource software" from the Macroecology Conference 2019. 
